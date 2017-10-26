@@ -47,6 +47,10 @@ extension Post: Preparation {
             builder.id()
             builder.string(Post.Keys.content)
         }
+        
+        // Able to generate fake data here
+        let post = Post(content: "Here is the generated post!")
+        try post.save()
     }
 
     /// Undoes what was done in `prepare`
