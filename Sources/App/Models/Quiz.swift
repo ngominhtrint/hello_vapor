@@ -13,8 +13,6 @@ final class Quiz: Model {
     let storage = Storage()
     
     // MARK: Properties and database type
-    
-    // The content of the quiz
     var content: String
     var type: String
     var rightAnswerId: Int
@@ -22,7 +20,7 @@ final class Quiz: Model {
     var mediaUrl: String
     var mediaType: String
     var level: Int
-    var category: String
+    var categoryId: Identifier
     var points: Double
     
     // The column names for properties in the Quiz table
@@ -35,12 +33,14 @@ final class Quiz: Model {
         static let mediaUrl = "mediaUrl"
         static let mediaType = "mediaType"
         static let level = "level"
+        static let categoryId = "category_id"
         static let category = "category"
+        static let answers = "answers"
         static let points = "points"
     }
     
     // Creates a new Quiz
-    init(content: String, type: String, rightAnswerId: Int, rightAnswerString: String, mediaUrl: String, mediaType: String, level: Int, category: String, points: Double) {
+    init(content: String, type: String, rightAnswerId: Int, rightAnswerString: String, mediaUrl: String, mediaType: String, level: Int, categoryId: Identifier, points: Double) {
         self.content = content
         self.type = type
         self.rightAnswerId = rightAnswerId
@@ -48,7 +48,7 @@ final class Quiz: Model {
         self.mediaUrl = mediaUrl
         self.mediaType = mediaType
         self.level = level
-        self.category = category
+        self.categoryId = categoryId
         self.points = points
     }
     
@@ -63,7 +63,7 @@ final class Quiz: Model {
         mediaUrl = try row.get(Quiz.Keys.mediaUrl)
         mediaType = try row.get(Quiz.Keys.mediaType)
         level = try row.get(Quiz.Keys.level)
-        category = try row.get(Quiz.Keys.category)
+        categoryId = try row.get(Quiz.Keys.categoryId)
         points = try row.get(Quiz.Keys.points)
     }
     
@@ -77,7 +77,7 @@ final class Quiz: Model {
         try row.set(Quiz.Keys.mediaUrl, mediaUrl)
         try row.set(Quiz.Keys.mediaType, mediaType)
         try row.set(Quiz.Keys.level, level)
-        try row.set(Quiz.Keys.category, category)
+        try row.set(Quiz.Keys.categoryId, categoryId)
         try row.set(Quiz.Keys.points, points)
         return row
     }
@@ -97,7 +97,7 @@ extension Quiz: Preparation {
             builder.string(Quiz.Keys.mediaUrl, length: nil, optional: true, unique: false, default: nil)
             builder.string(Quiz.Keys.mediaType, length: nil, optional: true, unique: false, default: nil)
             builder.int(Quiz.Keys.level, optional: true, unique: false, default: 0)
-            builder.string(Quiz.Keys.category, length: nil, optional: true, unique: false, default: nil)
+            builder.foreignId(for: Category.self)
             builder.double(Quiz.Keys.points, optional: true, unique: false, default: nil)
             
             // Able to generate fake data here
@@ -129,7 +129,7 @@ extension Quiz: JSONConvertible {
             mediaUrl: try json.get(Quiz.Keys.mediaUrl) ?? "",
             mediaType: try json.get(Quiz.Keys.mediaType) ?? "",
             level: try json.get(Quiz.Keys.level) ?? 0,
-            category: try json.get(Quiz.Keys.category) ?? "",
+            categoryId: try json.get(Quiz.Keys.categoryId) ?? 0,
             points: try json.get(Quiz.Keys.points) ?? 0.0
         )
     }
@@ -144,7 +144,8 @@ extension Quiz: JSONConvertible {
         try json.set(Quiz.Keys.mediaUrl, mediaUrl)
         try json.set(Quiz.Keys.mediaType, mediaType)
         try json.set(Quiz.Keys.level, level)
-        try json.set(Quiz.Keys.category, category)
+        try json.set(Quiz.Keys.category, category.first())
+        try json.set(Quiz.Keys.answers, answers.all())
         try json.set(Quiz.Keys.points, points)
         return json
     }
@@ -171,13 +172,21 @@ extension Quiz: Updateable {
             UpdateableKey(Quiz.Keys.mediaUrl, String.self) { quiz, mediaUrl in quiz.mediaUrl = mediaUrl },
             UpdateableKey(Quiz.Keys.mediaType, String.self) { quiz, mediaType in quiz.mediaType = mediaType },
             UpdateableKey(Quiz.Keys.level, Int.self) { quiz, level in quiz.level = level },
-            UpdateableKey(Quiz.Keys.category, String.self) { quiz, category in quiz.category = category },
+            UpdateableKey(Quiz.Keys.categoryId, Identifier.self) { quiz, categoryId in quiz.categoryId = categoryId },
             UpdateableKey(Quiz.Keys.points, Double.self) { quiz, points in quiz.points = points }
         ]
     }
 }
 
-
+extension Quiz {
+    var category: Parent<Quiz, Category> {
+        return parent(id: categoryId)
+    }
+    
+    var answers: Children<Quiz, Answer> {
+        return children()
+    }
+}
 
 
 

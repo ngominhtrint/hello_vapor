@@ -22,5 +22,7 @@ extension Droplet {
         
         try resource("posts", PostController.self)
         try resource("quizzes", QuizController.self)
+        try resource("categories", CategoryController.self)
+        try resource("answers", AnswerController.self)
     }
 }

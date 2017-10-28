@@ -73,7 +73,7 @@ final class QuizController: ResourceRepresentable {
         quiz.mediaUrl = new.mediaUrl
         quiz.mediaType = new.mediaType
         quiz.level = new.level
-        quiz.category = new.category
+        quiz.categoryId = new.categoryId
         quiz.points = new.points
         try quiz.save()
         
