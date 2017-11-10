@@ -65,3 +65,10 @@ vapor run serve
 - Vapor also provides us a cloud where you're able to deploy our application. It's called [Vapor Cloud](https://docs.vapor.codes/2.0/deploy/cloud/).
 
 - Or traditionally, you can deploy to **Heroku** by following [this tutorial](https://videos.raywenderlich.com/screencasts/516-server-side-swift-with-vapor-deploying-to-heroku-with-postgresql)
+
+### Api document
+
+### Reference
+- [Vapor Auth official document](https://docs.vapor.codes/2.0/auth/getting-started/)
+- [Vapor Auth article](https://theswiftwebdeveloper.com/vapor-2-authentication-2e11129e37e0)
+- [Make an api call with Vapor](https://razvan.net/2017/03/19/swift-on-server-making-an-api-call/)

@@ -1,5 +1,6 @@
 import FluentProvider
 import PostgreSQLProvider
+import AuthProvider
 
 extension Config {
     public func setup() throws {
@@ -15,12 +16,15 @@ extension Config {
     private func setupProviders() throws {
 //        try addProvider(FluentProvider.Provider.self)
         try addProvider(PostgreSQLProvider.Provider.self)
+        try addProvider(AuthProvider.Provider.self)
     }
     
     /// Add all models that should have their
     /// schemas prepared before the app boots
     private func setupPreparations() throws {
         
+        preparations.append(User.self)
+        preparations.append(Token.self)
         preparations.append(Post.self)
         preparations.append(Category.self)
         preparations.append(Quiz.self)
